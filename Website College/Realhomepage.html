@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Tracker</title>
+
+  <style>
+    
+/* === NAVIGATION BAR === */
+.navbar { 
+  background-color: #6c8ef5;
+  height: 100px;
+  width: 100%;
+  color: white;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display:inline-flex;
+  align-items: center;
+  padding: 0 60px;
+  box-sizing: border-box;
+  box-shadow: 1px 1px 1px rgba(211,211,211,0.308),
+              10px 11px 12px rgba(211,211,211,0.308);
+}
+/* Navbar Link */
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-size: 20px;
+  transition: color 0.3s ease;
+  font-family: 'Times New Roman', Times, serif;
+  font-weight: bold;
+  margin: 0 10px;
+  display:flex;
+  margin-left: 0px;
+  margin-right: 100px;
+}
+
+/* EMOJI CONTAINER DESIGNS */
+#BtnContainer {
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  color: white;
+  padding: 40px 50px;
+  margin: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 100px auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 40px;
+  height: 150px;
+  width: 50%;
+  box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.2);
+}
+
+/*  EMOJI BUTTONS  */
+.emojibutton {
+  background: none; 
+  border: none; 
+  box-shadow: none;
+  cursor: pointer; 
+  font-size: 60px;
+  margin: 30px; 
+  transition: transform 0.3s ease; 
+}
+
+.emojibutton:hover {
+  transform: scale(1.3); 
+}
+
+.very-happy:hover .emoji,
+.happy:hover .emoji,
+.okay:hover .emoji,
+.sad:hover .emoji,
+.very-sad:hover .emoji {
+  transform: scale(1.3);
+  transition: 0.4s ease;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 200px;
+  font-size: 50px;
+}
+
+
+
+.very-happy, .happy, .okay, .sad, .very-sad {
+  font-size: 50px;
+}
+
+/* the blurry background when it pop ups. */
+.popup {
+  display: none; 
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+/*the textbox when it pop ups*/
+.popup-content { 
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  width: 400px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+}
+/* the actual popup textarea */
+.popup textarea {
+  width: 100%;
+  height: 100px;
+  margin-top: 10px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  resize: none;
+}
+/* pop up buttons  */
+.popup-buttons { 
+  margin-top: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/*design of the pop up buttons */
+.popup-buttons button {
+  background-color: #6c8ef5;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+/* hover effect for pop up buttons */
+.popup-buttons button:hover { 
+  background-color: #5474d3;
+}
+
+  </style>
+</head>
+<body>
+
+  <!-- the upper section of website (nav part) -->
+  <nav class="navbar">  
+    <a href="Homepage.html">Home</a>
+    <a href="Tracker.html">See Mood Tracker</a>
+
+  </nav>
+
+  <main>
+    <h1 style="font-family:Arial, Helvetica, sans-serif;">How are you feeling today?</h1>
+
+    <div id="BtnContainer" style="margin-bottom: 20px;">
+      <button class="emojibutton very-happy" data-feeling="Very Happy"><span class="emoji">😄</span></button>
+      <button class="emojibutton happy" data-feeling="Happy"><span class="emoji">🙂</span></button>
+      <button class="emojibutton okay" data-feeling="Okay"><span class="emoji">😐</span></button>
+      <button class="emojibutton sad" data-feeling="Sad"><span class="emoji">☹️</span></button>
+      <button class="emojibutton very-sad" data-feeling="Very Sad"><span class="emoji">😣</span></button>
+    </div>
+  </main>
+
+  <!-- === the actual body of pop up section. === -->
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <h3 id="popup-title">How was your day?</h3>
+      <textarea id="reflection" placeholder="Write about your day..."></textarea>
+      
+      <div class="popup-buttons">
+        <button id="saveBtn">Save</button>
+        <button id="closeBtn">Close</button>
+      </div>
+    
+    </div>
+  </div>
+
+  <!-- === JAVASCRIPT SECTION === -->
+<script>
+  // Select all mood buttons and popup elements
+  const moodButtons = document.querySelectorAll('.emojibutton'); 
+  const popup = document.getElementById('popup');
+  const closeBtn = document.getElementById('closeBtn');
+  const saveBtn = document.getElementById('saveBtn');
+  const reflectionInput = document.getElementById('reflection');
+  const popupTitle = document.getElementById('popup-title'); 
+
+  
+  // When user clicks an emoji → show popup
+  moodButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const feeling = button.dataset.feeling || "Unknown Mood"; 
+      popup.style.display = 'flex';
+      reflectionInput.focus();
+      popup.setAttribute('data-selected-mood', feeling);
+
+      popupTitle.textContent = `You selected "${feeling}". How was your day?`;
+    });
+  });
+
+
+  // Close popup button logic
+  closeBtn.addEventListener('click', () => {
+    popup.style.display = 'none';
+    reflectionInput.value = '';
+  });
+
+  // 🆕 Save mood + reflection to localStorage (only once per day)
+  saveBtn.addEventListener('click', () => {
+    const mood = popup.getAttribute('data-selected-mood');
+    const reflection = reflectionInput.value;
+
+    if (!reflection.trim()) {
+      alert("Please write something before saving!");
+      return;
+    }
+
+    const today = new Date().toLocaleDateString(); // 🆕 Step 1: get today’s date
+    let moodRecords = JSON.parse(localStorage.getItem("moodRecords")) || [];
+
+    // 🆕 Step 2: Check if user already logged today
+    const alreadyLogged = moodRecords.some(entry => entry.date === today);
+
+    if (alreadyLogged) {
+      alert("You’ve already logged your mood today. Try again tomorrow!");
+      popup.style.display = 'none';
+      reflectionInput.value = '';
+      return; // 🆕 stop saving
+    }
+
+    // Step 3: Add new record if not logged yet
+    moodRecords.push({
+      date: today,
+      mood,
+      reflection
+    });
+
+    // Step 4: Save updated list
+    localStorage.setItem("moodRecords", JSON.stringify(moodRecords));
+
+    alert(`Saved! Mood: ${mood}`);
+
+    popup.style.display = 'none';
+    reflectionInput.value = '';
+  });
+</script>
+
+
+
+</body>
+</html>

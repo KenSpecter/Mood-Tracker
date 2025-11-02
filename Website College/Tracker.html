@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Mood Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background-color: #f7f9ff;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .record {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
+    }
+    .record h2 {
+      margin: 0;
+      color: #6c8ef5;
+    }
+    .record p {
+      margin: 5px 0 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+      <button onclick="window.location.href='Realhomepage.html'" style="font-size:16px; padding:10px 20px; border:none; border-radius:5px; background-color:#ffffff; color:#0b0d14; cursor:pointer; box-shadow: 0 3px 10px rgba(0,0,0,0.1);">Back to Home</button>
+    </nav>
+  <h1>Your Mood History</h1>
+  <div id="recordsContainer"></div>
+    
+  <script>
+    // ✅ Load saved mood records
+    const container = document.getElementById('recordsContainer');
+    const moodRecords = JSON.parse(localStorage.getItem("moodRecords")) || [];
+
+    if (moodRecords.length === 0) {
+      container.innerHTML = "<p style='text-align:center;'>No mood entries yet. Go record one!</p>";
+    } else {
+      moodRecords.forEach(entry => {
+        const div = document.createElement('div');
+        div.classList.add('record');
+        div.innerHTML = `
+          <h2>${entry.date} — ${entry.mood}</h2>
+          <p>${entry.reflection}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+  </script>
+</body>
+</html>
